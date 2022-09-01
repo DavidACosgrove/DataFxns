@@ -93,7 +93,6 @@ script: |
       :return [[Chem.Mol, ], ]:
       """
       all_prods = []
-      rxn_react = rxn.GetReactantTemplate(0)
       for mol in mols:
           if mol is not None and mol:
               final_mols = deque([mol])
@@ -137,8 +136,6 @@ script: |
           else:
               raise ValueError('Received neither reaction SMARTS nor'
                                ' reaction sketch.')
-          from rdkit.Chem import AllChem
-          raise ValueError(AllChem.ReactionToRxnBlock(rxn))
   
       input_column = request.inputColumns[column_id]
       mols = column_to_molecules(input_column)
