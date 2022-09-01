@@ -69,13 +69,13 @@ script: |
   from typing import Optional
   
   from rdkit import Chem
-  from rdkit.Chem import AllChem
   from rdkit.Chem.rdChemReactions import ChemicalReaction
   
-  from df.chem_helper import column_to_molecules, input_field_to_molecule, \
+  from df.chem_helper import column_to_molecules, \
       molecules_to_column
-  from df.data_transfer import DataFunctionRequest, DataFunctionResponse, DataType, ColumnData, \
+  from df.data_transfer import DataFunctionRequest, DataFunctionResponse, DataType, \
       string_input_field
+  from ruse.rdkit.rdkit_utils import string_to_reaction
   
   
   def run_reactions(mols: list[Chem.Mol], rxn: ChemicalReaction) -> list[Optional[Chem.Mol]]:
@@ -125,12 +125,15 @@ script: |
   
   def execute(request: DataFunctionRequest) -> DataFunctionResponse:
       column_id = string_input_field(request, 'structureColumn')
-      rxn_smarts = string_input_field(request, 'reactionSmarts')
+      rxn_smarts_field = request.inputFields['reactionSmarts']
+      rxn_smarts = str(rxn_smarts_field.data)
       if rxn_smarts:
-          rxn = AllChem.ReactionFromSmarts(rxn_smarts)
+          rxn = string_to_reaction(rxn_smarts_field.contentType, rxn_smarts)
       else:
-          rxn = input_field_to_molecule(request, 'reactionQuery')
-          print(f'rxn query: {Chem.MolToSmiles(rxn.GetReactantTemplate(0))}')
+          rxn_sketcher_field = request.inputFields['reactionQuery']
+          rxn_sketch_text = str(rxn_sketcher_field.data)
+          rxn = string_to_reaction(rxn_smarts_field.contentType, rxn_sketch_text)
+  
       input_column = request.inputColumns[column_id]
       mols = column_to_molecules(input_column)
       products = run_reactions(mols, rxn)
