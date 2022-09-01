@@ -137,6 +137,8 @@ script: |
           else:
               raise ValueError('Received neither reaction SMARTS nor'
                                ' reaction sketch.')
+          from rdkit.Chem import AllChem
+          raise ValueError(AllChem.ReactionToRxnBlock(rxn))
   
       input_column = request.inputColumns[column_id]
       mols = column_to_molecules(input_column)
