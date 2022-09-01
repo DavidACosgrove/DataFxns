@@ -132,6 +132,7 @@ script: |
       else:
           rxn_sketcher_field = request.inputFields['reactionQuery']
           rxn_sketch_text = str(rxn_sketcher_field.data)
+          raise ValueError(rxn_sketch_text)
           if rxn_sketch_text is not None and rxn_sketch_text and rxn_sketch_text != 'None':
               rxn = string_to_reaction(rxn_sketcher_field.contentType, rxn_sketch_text)
           else:
