@@ -127,12 +127,16 @@ script: |
       column_id = string_input_field(request, 'structureColumn')
       rxn_smarts_field = request.inputFields['reactionSmarts']
       rxn_smarts = str(rxn_smarts_field.data)
-      if rxn_smarts:
+      if rxn_smarts is not None and rxn_smarts and rxn_smarts != 'None':
           rxn = string_to_reaction(rxn_smarts_field.contentType, rxn_smarts)
       else:
           rxn_sketcher_field = request.inputFields['reactionQuery']
           rxn_sketch_text = str(rxn_sketcher_field.data)
-          rxn = string_to_reaction(rxn_smarts_field.contentType, rxn_sketch_text)
+          if rxn_sketch_text is not None and rxn_sketch_text and rxn_sketch_text != 'None':
+              rxn = string_to_reaction(rxn_sketcher_field.contentType, rxn_sketch_text)
+          else:
+              raise ValueError('Received neither reaction SMARTS nor'
+                               ' reaction sketch.')
   
       input_column = request.inputColumns[column_id]
       mols = column_to_molecules(input_column)
