@@ -3,7 +3,7 @@ name: Memory Test
 description: Memory Test
 category: Chemistry
 version: 1.0.0
-serviceName: ExactMass
+serviceName: MemoryTest
 serviceUri: glysade.python
 executorId: Glysade.CSharpDataFxn
 inputFields:
