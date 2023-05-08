@@ -1,0 +1,154 @@
+id: 181217bc-eb2a-a5fd-18d4-07ca8484e88a
+name: Near Neighbors Table to Table
+description: Calculates near neighbors of column of molecules from column of molecules in second table.
+category: Chemistry
+version: 1.0.0
+serviceName: Script
+serviceUri: glysade.python
+executorId: Glysade.CPythonDataFxn
+inputFields:
+- control:
+    id: queryTable
+    label: Query Table
+    type: tableselect
+    multi: !!bool false
+  request:
+    id: queryTable
+    dataType: string
+    selectorType: table
+- control:
+    id: queryStructureColumn
+    label: Select structure column from query table
+    type: columnselect
+    filters:
+    - dataType: string
+      contentType:
+      - chemical/x-mdl-molfile
+      - chemical/x-mdl-molfile-v3000
+      - chemical/x-smiles
+      - chemical/x-daylight-smiles
+    - dataType: binary
+      contentType:
+      - chemical/x-mdl-molfile
+      - chemical/x-mdl-molfile-v3000
+    tableSelectId: queryTable
+    validationRules:
+    - type: required
+      message: Must select column of 2D structures
+    tooltip: Neighbors of this column will be found.
+  request:
+    id: queryStructureColumn
+    dataType: string
+    selectorType: column
+- control:
+    id: targetTable
+    label: Target Table
+    type: tableselect
+    multi: !!bool false
+  request:
+    id: targetTable
+    dataType: string
+    selectorType: table
+- control:
+    id: targetStructureColumn
+    label: Select structure column from target table
+    type: columnselect
+    multi: !!bool false
+    filters:
+    - dataType: string
+      contentType:
+      contentType:
+      - smiles
+      - chemical/x-daylight-smiles
+      - chemical/daylight-smiles
+      - chemical/x-smiles
+      - chemical/smiles
+      - mol
+      - chemical/x-mdl-molfile
+      - chemical/x-mdl-molfile-v3000
+      - chemical/mdl-molfile-v3000
+      - chemical/mdl-molfile
+    tableSelectId: targetTable
+    validationRules:
+    - type: required
+      message: ''
+    tooltip: This column will be searched for neighbors.
+  request:
+    id: targetStructureColumn
+    dataType: string
+    selectorType: column
+- control:
+    id: numNeighbors
+    label: Number of neighbors
+    type: text
+    tooltip: Number of neighbors to be found for each query molecule.
+    validationRules:
+    - type: range
+      message: ''
+      min: !!int 1
+      max: !!int 5
+  request:
+    id: numNeighbors
+    dataType: integer
+    data: !!int 3
+- control:
+    id: fpType
+    label: Fingerprint Type
+    type: radiogroup
+    radios:
+    - value: morgan
+      text: Morgan
+    - value: topological
+      text: Topological
+    - text: MACCS
+      value: maccs
+    - text: Atom Pair
+      value: atompair
+    - text: Pattern
+      value: pattern
+    tooltip: Type of fingerprint to be used to determine neighbors.
+    validationRules:
+    - type: required
+      message: ''
+  request:
+    id: fpType
+    dataType: string
+tags:
+- color: '#50AF28'
+  text: chemistry
+- color: '#c6fc00'
+  text: calcprop
+updateBehavior: manual
+maximumOutputColumns: !!int 20
+maximumOutputTables: !!int 0
+chemistryFunction: !!bool false
+script: |
+  from rdkit.Chem.Descriptors import ExactMolWt
+  from df.chem_helper import column_to_molecules
+  from df.data_transfer import DataFunctionRequest, DataFunctionResponse, DataType, ColumnData, \
+      string_input_field
+
+
+  def execute(request: DataFunctionRequest) -> DataFunctionResponse:
+      column_id = string_input_field(request, 'structureColumn')
+      input_column = request.inputColumns[column_id]
+      mols = column_to_molecules(input_column)
+      weights = [None if m is None else ExactMolWt(m) for m in mols]
+      output_column = ColumnData(name=f'{input_column.name} Exact Mass', dataType=DataType.DOUBLE, values=weights)
+      response = DataFunctionResponse(outputColumns=[output_column])
+      return response
+outputFields:
+- id: structureColumn
+  source: inputField
+  type: default
+  name: Structure column
+- id: column1
+  source: column
+  type: filter
+  name: Output exact mass column
+allowedClients:
+- Analyst
+- WebPlayer
+demoUrl: 
+limitBy: none
+minimumChartsVersion: 
