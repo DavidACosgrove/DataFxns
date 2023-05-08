@@ -1,4 +1,4 @@
-id: 181217bc-eb2a-a5fd-18d4-07ca8484e88a
+id: ed87b03a-f1fc-60ad-26b9-6eb45a5aa653
 name: Near Neighbors Table to Table
 description: Calculates near neighbors of column of molecules from column of molecules in second table.
 category: Chemistry
@@ -55,23 +55,22 @@ inputFields:
     type: columnselect
     multi: !!bool false
     filters:
-    - dataType: string
+    - dataType:
+      - string
       contentType:
-      contentType:
-      - smiles
       - chemical/x-daylight-smiles
       - chemical/daylight-smiles
-      - chemical/x-smiles
-      - chemical/smiles
-      - mol
       - chemical/x-mdl-molfile
       - chemical/x-mdl-molfile-v3000
-      - chemical/mdl-molfile-v3000
-      - chemical/mdl-molfile
+    - dataType:
+      - binary
+      contentType:
+      - chemical/x-mdl-molfile
+      - chemical/x-mdl-molfile-v3000
     tableSelectId: targetTable
     validationRules:
     - type: required
-      message: ''
+      message: Must select column of 2D structures
     tooltip: This column will be searched for neighbors.
   request:
     id: targetStructureColumn
