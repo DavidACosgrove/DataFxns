@@ -71,6 +71,10 @@ inputFields:
     id: fpType
     label: Fingerprint Type
     type: radiogroup
+    group:
+      name: Advanced
+      collapsible: !!bool true
+      collapsed: !!bool true
     radios:
     - value: morgan
       text: Morgan
