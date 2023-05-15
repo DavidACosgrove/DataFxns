@@ -80,14 +80,14 @@ inputFields:
       text: Morgan
     - value: rdkit
       text: RDKit
-    - value: topological
-      text: Topological
+    - text: Pattern
+      value: pattern
     - text: MACCS
       value: maccs
     - text: Atom Pair
       value: atompair
-    - text: Pattern
-      value: pattern
+    - value: topological
+      text: Topological Torsion
     tooltip: Type of fingerprint to be used to determine neighbors.
     validationRules:
     - type: required
