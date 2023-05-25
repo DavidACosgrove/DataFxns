@@ -108,6 +108,22 @@ inputFields:
     id: maxMolsPerInput
     dataType: integer
     data: !!int 1000
+- control:
+    id: totalOutputMols
+    label: Maximum number of molecules in total
+    type: text
+    tooltip: Constrains the total number of molecules that can be produced for all input molecules.  In case there's a combinatorial explosion in a larger molecule.
+    validationRules:
+    - type: numeric
+      message: ''
+    - type: range
+      message: ''
+      min: !!int 1
+      max: !!int 5000000
+  request:
+    id: totalOutputMols
+    dataType: integer
+    data: !!int 500000
 tags:
 - color: '#50AF28'
   text: chemistry
